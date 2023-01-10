@@ -9,12 +9,36 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    var leftAnchor1: NSLayoutConstraint?
+    var leftAnchor2: NSLayoutConstraint?
+    
+    private lazy var cityLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Moscow"
+        label.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        label.font = .systemFont(ofSize: 40, weight: .regular)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
     private lazy var temperatureLabel: UILabel = {
         let label = UILabel()
-        label.text = "-20"
+        label.text = "-22\u{00B0}"
         label.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-        label.font = UIFont(name: "Avenir Next", size: 100)
-        //label.font = .systemFont(ofSize: 40, weight: .light)
+        //label.font = UIFont(name: "Avenir Next", size: 100)
+        //label.font = UIFont.systemFont(ofSize: 108
+        label.font = .systemFont(ofSize: 100, weight: .thin)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var weatherConditionsLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Sunny"
+        label.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        //label.font = UIFont(name: "Avenir Next", size: 100)
+        //label.font = UIFont.systemFont(ofSize: 108
+        label.font = .systemFont(ofSize: 30, weight: .regular)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -30,59 +54,46 @@ class ViewController: UIViewController {
     } ()
     
     @objc func handleAnimate() {
-        
         leftAnchor1?.isActive = false
         leftAnchor2?.isActive = true
         
-        UIView.animate(withDuration: 1000, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, animations: {
-            
+        UIView.animate(withDuration: 5) {
             self.view.layoutIfNeeded()
-            
-            //self.imageView.frame = CGRect(x: 200, y: 0, width: 50, height: 50)
-        })
+        }
     }
-    
-    var leftAnchor1: NSLayoutConstraint?
-    var leftAnchor2: NSLayoutConstraint?
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-       //mainLogoImageView.frame = CGRect.zero
-       // mainLogoImageView.center = view.center
-        
+        addToSubview()
+        setSubviewsLayouts()
+    }
+    
+    private func addToSubview() {
         view.addSubview(backgroundImageView)
         view.addSubview(temperatureLabel)
+        view.addSubview(cityLabel)
+        view.addSubview(weatherConditionsLabel)
+    }
+    
+    private func setSubviewsLayouts() {
         
         backgroundImageView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        
-        backgroundImageView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 100).isActive = true
-        
+        backgroundImageView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
         leftAnchor1 = backgroundImageView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: -300)
         leftAnchor1?.isActive = true
         
         leftAnchor2 = backgroundImageView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: -500)
         leftAnchor2?.isActive = false
         
-        //imageView.widthAnchor.constraint(equalToConstant: 100).isActive = true
-        //imageView.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        cityLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30).isActive = true
+        cityLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+        //cityLabel.heightAnchor.constraint(equalToConstant: 100).isActive = true
         
-        
-        //imageView.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
-        
-        // Do any additional setup after loading the view.
-    
-        
-        temperatureLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30).isActive = true
-        
+        temperatureLabel.topAnchor.constraint(equalTo: cityLabel.bottomAnchor, constant: 0).isActive = true
         temperatureLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         
-//        temperatureLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 50).isActive = false
-//        temperatureLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 0).isActive = false
-        temperatureLabel.heightAnchor.constraint(equalToConstant: 100).isActive = true
-        
+        weatherConditionsLabel.topAnchor.constraint(equalTo: temperatureLabel.bottomAnchor, constant: 0).isActive = true
+        weatherConditionsLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
     }
-
-
 }
 
