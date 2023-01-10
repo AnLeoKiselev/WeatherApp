@@ -8,7 +8,8 @@
 import UIKit
 
 class ViewController: UIViewController {
-
+    var rightAnchor1: NSLayoutConstraint?
+    var rightAnchor2: NSLayoutConstraint?
     var leftAnchor1: NSLayoutConstraint?
     var leftAnchor2: NSLayoutConstraint?
     var dayOrNight: String = ""
@@ -49,16 +50,19 @@ class ViewController: UIViewController {
         //imageView.image = UIImage(named: "clouds")
         imageView.image = UIImage(named: "clear_sky_night")
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.isUserInteractionEnabled = true
-        imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleAnimate)))
+        //imageView.isUserInteractionEnabled = true
+        //imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleAnimate)))
         return imageView
     } ()
     
     private lazy var dayNightSegmentedControl: UISegmentedControl = {
         let items = ["Day", "Night"]
         let segmentedControl = UISegmentedControl(items: items)
+        segmentedControl.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        segmentedControl.layer.borderWidth = 1
+        //segmentedControl.selectedSegmentTintColor = .black
         //segmentedControl.selectedSegmentTintColor = #colorLiteral(red: 0.5654026866, green: 0.4771631956, blue: 0.8172003031, alpha: 1)
-        segmentedControl.backgroundColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
+        //segmentedControl.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         segmentedControl.translatesAutoresizingMaskIntoConstraints = false
         segmentedControl.addTarget(self, action: #selector(dayNightSegmentedControlDidChange(_:)), for:.valueChanged)
         segmentedControl.selectedSegmentIndex = 0
@@ -68,23 +72,16 @@ class ViewController: UIViewController {
     private lazy var weatherConditionsSegmentedControl: UISegmentedControl = {
         let items = ["Clear", "Clouds", "Shower", "Rain", "Thunderstorm", "Snow", "Mist"]
         let segmentedControl = UISegmentedControl(items: items)
+        segmentedControl.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        segmentedControl.layer.borderWidth = 1
         //segmentedControl.selectedSegmentTintColor = #colorLiteral(red: 0.5654026866, green: 0.4771631956, blue: 0.8172003031, alpha: 1)
-        segmentedControl.backgroundColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
+        //segmentedControl.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         segmentedControl.translatesAutoresizingMaskIntoConstraints = false
         segmentedControl.addTarget(self, action: #selector(weatherConditionsSegmentedControlDidChange(_:)), for:.valueChanged)
         segmentedControl.selectedSegmentIndex = 0
         return segmentedControl
     }()
     
-    @objc func handleAnimate() {
-        leftAnchor1?.isActive = false
-        leftAnchor2?.isActive = true
-        
-        UIView.animate(withDuration: 5) {
-            self.view.layoutIfNeeded()
-        }
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         addToSubview()
@@ -100,18 +97,40 @@ class ViewController: UIViewController {
         view.addSubview(dayNightSegmentedControl)
     }
     
+    func handleAnimate() {
+        
+        rightAnchor1?.isActive.toggle()
+        leftAnchor1?.isActive.toggle()
+        rightAnchor2?.isActive.toggle()
+        leftAnchor2?.isActive.toggle()
+
+        //rightAnchor2?.isActive = true
+        //leftAnchor2?.isActive = true
+        
+        //rightAnchor1?.isActive = false
+        //leftAnchor1?.isActive = false
+        
+            UIView.animate(withDuration: 1) {
+                self.view.layoutIfNeeded()
+            }
+        }
+ 
+    
     @objc func dayNightSegmentedControlDidChange(_ segmentedControl: UISegmentedControl) {
         switch segmentedControl.selectedSegmentIndex {
         case 0:
             dayOrNight = "_day"
+            handleAnimate()
             let generator = UISelectionFeedbackGenerator()
             generator.selectionChanged()
         case 1:
             dayOrNight = "_night"
+            handleAnimate()
             let generator = UISelectionFeedbackGenerator()
             generator.selectionChanged()
         default:
             return
+            
         }
     }
     
@@ -119,34 +138,42 @@ class ViewController: UIViewController {
         switch segmentedControl.selectedSegmentIndex {
         case 0:
             backgroundImageView.image = UIImage(named: "clear_sky\(dayOrNight)")
+            handleAnimate()
             let generator = UISelectionFeedbackGenerator()
             generator.selectionChanged()
         case 1:
             backgroundImageView.image = UIImage(named: "clouds\(dayOrNight)")
+            handleAnimate()
             let generator = UISelectionFeedbackGenerator()
             generator.selectionChanged()
         case 2:
             backgroundImageView.image = UIImage(named: "shower_rain\(dayOrNight)")
+            handleAnimate()
             let generator = UISelectionFeedbackGenerator()
             generator.selectionChanged()
         case 3:
             backgroundImageView.image = UIImage(named: "rain\(dayOrNight)")
+            handleAnimate()
             let generator = UISelectionFeedbackGenerator()
             generator.selectionChanged()
         case 4:
             backgroundImageView.image = UIImage(named: "thunderstorm\(dayOrNight)")
+            handleAnimate()
             let generator = UISelectionFeedbackGenerator()
             generator.selectionChanged()
         case 5:
             backgroundImageView.image = UIImage(named: "snow\(dayOrNight)")
+            handleAnimate()
             let generator = UISelectionFeedbackGenerator()
             generator.selectionChanged()
         case 6:
             backgroundImageView.image = UIImage(named: "mist\(dayOrNight)")
+            handleAnimate()
             let generator = UISelectionFeedbackGenerator()
             generator.selectionChanged()
         default:
             return
+            
         }
     }
     
@@ -154,11 +181,22 @@ class ViewController: UIViewController {
         
         backgroundImageView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         backgroundImageView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
-        leftAnchor1 = backgroundImageView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: -200)
-        leftAnchor1?.isActive = true
         
-        leftAnchor2 = backgroundImageView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: -400)
+        leftAnchor1?.isActive = true
+        leftAnchor1 = backgroundImageView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: -400)//-400
+        
+        rightAnchor1?.isActive = true
+        rightAnchor1 = backgroundImageView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 350) //350
+        
         leftAnchor2?.isActive = false
+        leftAnchor2 = backgroundImageView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: -100) //-500
+
+        rightAnchor2?.isActive = false
+        rightAnchor2 = backgroundImageView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 650) // 250
+        
+        
+        
+        
         
         cityLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30).isActive = true
         cityLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
@@ -170,13 +208,14 @@ class ViewController: UIViewController {
         weatherConditionsLabel.topAnchor.constraint(equalTo: temperatureLabel.bottomAnchor, constant: 0).isActive = true
         weatherConditionsLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         
-        weatherConditionsSegmentedControl.bottomAnchor.constraint(equalTo: dayNightSegmentedControl.topAnchor, constant: -20).isActive = true
+        dayNightSegmentedControl.bottomAnchor.constraint(equalTo: weatherConditionsSegmentedControl.topAnchor, constant: -20).isActive = true
+        dayNightSegmentedControl.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10).isActive = true
+        dayNightSegmentedControl.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10).isActive = true
+        
+        weatherConditionsSegmentedControl.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
         weatherConditionsSegmentedControl.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10).isActive = true
         weatherConditionsSegmentedControl.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10).isActive = true
         
-        dayNightSegmentedControl.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
-        dayNightSegmentedControl.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10).isActive = true
-        dayNightSegmentedControl.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10).isActive = true
     }
 }
 
