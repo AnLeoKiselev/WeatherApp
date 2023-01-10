@@ -53,6 +53,17 @@ class ViewController: UIViewController {
         return imageView
     } ()
     
+    private lazy var segmentedControl: UISegmentedControl = {
+        let items = ["Sun", "Rain", "Cloud"]
+        let segmentedControl = UISegmentedControl(items: items)
+        //segmentedControl.selectedSegmentTintColor = #colorLiteral(red: 0.5654026866, green: 0.4771631956, blue: 0.8172003031, alpha: 1)
+        //segmentedControl.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        segmentedControl.translatesAutoresizingMaskIntoConstraints = false
+        segmentedControl.addTarget(self, action: #selector(segmentedControlDidChange(_:)), for:.valueChanged)
+        segmentedControl.selectedSegmentIndex = 0
+        return segmentedControl
+    }()
+    
     @objc func handleAnimate() {
         leftAnchor1?.isActive = false
         leftAnchor2?.isActive = true
@@ -73,16 +84,36 @@ class ViewController: UIViewController {
         view.addSubview(temperatureLabel)
         view.addSubview(cityLabel)
         view.addSubview(weatherConditionsLabel)
+        view.addSubview(segmentedControl)
+    }
+    
+    @objc func segmentedControlDidChange(_ segmentedControl: UISegmentedControl) {
+        switch segmentedControl.selectedSegmentIndex {
+        case 0:
+            print ("0")
+            let generator = UISelectionFeedbackGenerator()
+            generator.selectionChanged()
+        case 1:
+            print ("1")
+            let generator = UISelectionFeedbackGenerator()
+            generator.selectionChanged()
+        case 2:
+            print ("2")
+            let generator = UISelectionFeedbackGenerator()
+            generator.selectionChanged()
+        default:
+            return
+        }
     }
     
     private func setSubviewsLayouts() {
         
         backgroundImageView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         backgroundImageView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
-        leftAnchor1 = backgroundImageView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: -300)
+        leftAnchor1 = backgroundImageView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: -200)
         leftAnchor1?.isActive = true
         
-        leftAnchor2 = backgroundImageView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: -500)
+        leftAnchor2 = backgroundImageView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: -400)
         leftAnchor2?.isActive = false
         
         cityLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30).isActive = true
@@ -94,6 +125,10 @@ class ViewController: UIViewController {
         
         weatherConditionsLabel.topAnchor.constraint(equalTo: temperatureLabel.bottomAnchor, constant: 0).isActive = true
         weatherConditionsLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+        
+        segmentedControl.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
+        segmentedControl.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10).isActive = true
+        segmentedControl.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10).isActive = true
     }
 }
 
