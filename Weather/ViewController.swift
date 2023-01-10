@@ -11,6 +11,7 @@ class ViewController: UIViewController {
 
     var leftAnchor1: NSLayoutConstraint?
     var leftAnchor2: NSLayoutConstraint?
+    var dayOrNight: String = ""
     
     private lazy var cityLabel: UILabel = {
         let label = UILabel()
@@ -46,7 +47,7 @@ class ViewController: UIViewController {
     private lazy var backgroundImageView: UIImageView = {
         let imageView = UIImageView()
         //imageView.image = UIImage(named: "clouds")
-        imageView.image = UIImage(named: "sun")
+        imageView.image = UIImage(named: "clear_sky_night")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.isUserInteractionEnabled = true
         imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleAnimate)))
@@ -57,21 +58,21 @@ class ViewController: UIViewController {
         let items = ["Day", "Night"]
         let segmentedControl = UISegmentedControl(items: items)
         //segmentedControl.selectedSegmentTintColor = #colorLiteral(red: 0.5654026866, green: 0.4771631956, blue: 0.8172003031, alpha: 1)
-        //segmentedControl.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        segmentedControl.backgroundColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
         segmentedControl.translatesAutoresizingMaskIntoConstraints = false
         segmentedControl.addTarget(self, action: #selector(dayNightSegmentedControlDidChange(_:)), for:.valueChanged)
-        //segmentedControl.selectedSegmentIndex = 0
+        segmentedControl.selectedSegmentIndex = 0
         return segmentedControl
     }()
     
     private lazy var weatherConditionsSegmentedControl: UISegmentedControl = {
-        let items = ["clear", "clouds", "shower rain", "rain", "thunderstorm", "snow", "mist"]
+        let items = ["Clear", "Clouds", "Shower", "Rain", "Thunderstorm", "Snow", "Mist"]
         let segmentedControl = UISegmentedControl(items: items)
         //segmentedControl.selectedSegmentTintColor = #colorLiteral(red: 0.5654026866, green: 0.4771631956, blue: 0.8172003031, alpha: 1)
-        //segmentedControl.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        segmentedControl.backgroundColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
         segmentedControl.translatesAutoresizingMaskIntoConstraints = false
         segmentedControl.addTarget(self, action: #selector(weatherConditionsSegmentedControlDidChange(_:)), for:.valueChanged)
-        //segmentedControl.selectedSegmentIndex = 0
+        segmentedControl.selectedSegmentIndex = 0
         return segmentedControl
     }()
     
@@ -102,11 +103,11 @@ class ViewController: UIViewController {
     @objc func dayNightSegmentedControlDidChange(_ segmentedControl: UISegmentedControl) {
         switch segmentedControl.selectedSegmentIndex {
         case 0:
-            print ("0")
+            dayOrNight = "_day"
             let generator = UISelectionFeedbackGenerator()
             generator.selectionChanged()
         case 1:
-            print ("1")
+            dayOrNight = "_night"
             let generator = UISelectionFeedbackGenerator()
             generator.selectionChanged()
         default:
@@ -117,31 +118,31 @@ class ViewController: UIViewController {
     @objc func weatherConditionsSegmentedControlDidChange(_ segmentedControl: UISegmentedControl) {
         switch segmentedControl.selectedSegmentIndex {
         case 0:
-            print ("0")
+            backgroundImageView.image = UIImage(named: "clear_sky\(dayOrNight)")
             let generator = UISelectionFeedbackGenerator()
             generator.selectionChanged()
         case 1:
-            print ("1")
+            backgroundImageView.image = UIImage(named: "clouds\(dayOrNight)")
             let generator = UISelectionFeedbackGenerator()
             generator.selectionChanged()
         case 2:
-            print ("2")
+            backgroundImageView.image = UIImage(named: "shower_rain\(dayOrNight)")
             let generator = UISelectionFeedbackGenerator()
             generator.selectionChanged()
         case 3:
-            print ("0")
+            backgroundImageView.image = UIImage(named: "rain\(dayOrNight)")
             let generator = UISelectionFeedbackGenerator()
             generator.selectionChanged()
         case 4:
-            print ("1")
+            backgroundImageView.image = UIImage(named: "thunderstorm\(dayOrNight)")
             let generator = UISelectionFeedbackGenerator()
             generator.selectionChanged()
         case 5:
-            print ("2")
+            backgroundImageView.image = UIImage(named: "snow\(dayOrNight)")
             let generator = UISelectionFeedbackGenerator()
             generator.selectionChanged()
         case 6:
-            print ("2")
+            backgroundImageView.image = UIImage(named: "mist\(dayOrNight)")
             let generator = UISelectionFeedbackGenerator()
             generator.selectionChanged()
         default:
