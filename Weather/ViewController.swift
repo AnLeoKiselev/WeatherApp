@@ -23,14 +23,32 @@ class ViewController: UIViewController {
     
     private lazy var navButton: UIButton = {
         let button = UIButton(type: .system)
-        
+        let config = UIImage.SymbolConfiguration(
+            pointSize: 34, weight: .medium, scale: .default)
+        let image = UIImage(systemName: "location.circle.fill", withConfiguration: config)?.withTintColor(.white, renderingMode:.alwaysOriginal)
+        button.setImage(image, for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+        } ()
+    
+    private lazy var searchButton: UIButton = {
+        let button = UIButton(type: .system)
         let config = UIImage.SymbolConfiguration(
             pointSize: 35, weight: .medium, scale: .default)
-        let image = UIImage(systemName: "location.circle.fill", withConfiguration: config)?.withTintColor(.white, renderingMode:.alwaysOriginal)
-        
+        let image = UIImage(systemName: "magnifyingglass.circle.fill", withConfiguration: config)?.withTintColor(.white, renderingMode:.alwaysOriginal)
         button.setImage(image, for: .normal)
-
         button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+        } ()
+    
+    private lazy var gearButton: UIButton = {
+        let button = UIButton(type: .system)
+        let config = UIImage.SymbolConfiguration(
+            pointSize: 33, weight: .medium, scale: .default)
+        let image = UIImage(systemName: "gear", withConfiguration: config)?.withTintColor(.white, renderingMode:.alwaysOriginal)
+        button.setImage(image, for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(gearButtonTapped), for: .touchUpInside)
         return button
         } ()
     
@@ -82,6 +100,7 @@ class ViewController: UIViewController {
         segmentedControl.translatesAutoresizingMaskIntoConstraints = false
         segmentedControl.addTarget(self, action: #selector(dayNightSegmentedControlDidChange(_:)), for:.valueChanged)
         segmentedControl.selectedSegmentIndex = 0
+        segmentedControl.isHidden = true
         return segmentedControl
     }()
     
@@ -95,6 +114,7 @@ class ViewController: UIViewController {
         segmentedControl.translatesAutoresizingMaskIntoConstraints = false
         segmentedControl.addTarget(self, action: #selector(weatherConditionsSegmentedControlDidChange(_:)), for:.valueChanged)
         segmentedControl.selectedSegmentIndex = 0
+        segmentedControl.isHidden = true
         return segmentedControl
     }()
     
@@ -112,6 +132,14 @@ class ViewController: UIViewController {
         view.addSubview(weatherConditionsSegmentedControl)
         view.addSubview(dayNightSegmentedControl)
         view.addSubview(navButton)
+        view.addSubview(searchButton)
+        view.addSubview(gearButton)
+    }
+    
+    @objc func gearButtonTapped () {
+        weatherConditionsSegmentedControl.isHidden = false
+        dayNightSegmentedControl.isHidden = false
+        gearButton.isHidden = true
     }
     
     @objc func handleAnimate() {
@@ -205,6 +233,11 @@ class ViewController: UIViewController {
         navButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
         navButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10).isActive = true
         
+        searchButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
+        searchButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10).isActive = true
+        
+        gearButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
+        gearButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10).isActive = true
     }
 }
 
