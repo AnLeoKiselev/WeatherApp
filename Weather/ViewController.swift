@@ -117,7 +117,8 @@ class ViewController: UIViewController {
         
         
 //
-           UIView.animate(withDuration: 1) {
+           UIView.animate(withDuration: 3) {
+               
                self.backgroundImageView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: -500).isActive = true
                
                self.view.layoutIfNeeded()
@@ -206,7 +207,7 @@ class ViewController: UIViewController {
     
     private func setSubviewsLayouts() {
         
-        backgroundImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30).isActive = true
+        backgroundImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
         //backgroundImageView.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         self.backgroundImageView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 000).isActive = true
         
