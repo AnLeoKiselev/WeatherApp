@@ -13,13 +13,13 @@ class ViewController: UIViewController {
     var firstConstraintsPosition: Bool = true
     var backgroundImage = "clear_sky_day"
     
-//    private lazy var navButton: UIButton = {
-//    let image = UIImage(systemName: "location.circle.fill")
-//    //button = UIImage.SymbolConfiguration(pointSize: 140, weight: .bold, scale: .large)
-//    //let largeBoldDoc = UIImage(systemName: "doc.circle.fill")
-//    button.setImage(largeBoldDoc, for: .normal)
-//        return button
-//    }()
+    //    private lazy var navButton: UIButton = {
+    //    let image = UIImage(systemName: "location.circle.fill")
+    //    //button = UIImage.SymbolConfiguration(pointSize: 140, weight: .bold, scale: .large)
+    //    //let largeBoldDoc = UIImage(systemName: "doc.circle.fill")
+    //    button.setImage(largeBoldDoc, for: .normal)
+    //        return button
+    //    }()
     
     private lazy var navButton: UIButton = {
         let button = UIButton(type: .system)
@@ -29,7 +29,7 @@ class ViewController: UIViewController {
         button.setImage(image, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
-        } ()
+    } ()
     
     private lazy var searchButton: UIButton = {
         let button = UIButton(type: .system)
@@ -38,8 +38,28 @@ class ViewController: UIViewController {
         let image = UIImage(systemName: "magnifyingglass.circle.fill", withConfiguration: config)?.withTintColor(.white, renderingMode:.alwaysOriginal)
         button.setImage(image, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(searchButtonTapped), for: .touchUpInside)
         return button
-        } ()
+    } ()
+    
+    private lazy var cityInputTextField: UITextField = {
+        let textField = UITextField()
+        textField.attributedPlaceholder =
+        NSAttributedString(string: "Enter city", attributes: [NSAttributedString.Key.foregroundColor: UIColor.init(_colorLiteralRed: 0.6904429793, green: 0.6597178578, blue: 0.8047469258, alpha: 0.5)])
+        textField.enablesReturnKeyAutomatically = true
+        textField.textColor = .white
+        textField.layer.borderWidth = 1
+        textField.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        textField.layer.cornerRadius = 8
+        
+        textField.font = .systemFont(ofSize: 27, weight: .regular)
+        textField.keyboardType = .default //тип клавиатуры
+        textField.keyboardAppearance = .dark
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.isHidden = true
+        textField.addPadding(.both(10))
+        return textField
+    }()
     
     private lazy var gearButton: UIButton = {
         let button = UIButton(type: .system)
@@ -50,7 +70,7 @@ class ViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(gearButtonTapped), for: .touchUpInside)
         return button
-        } ()
+    } ()
     
     private lazy var cityLabel: UILabel = {
         let label = UILabel()
@@ -134,7 +154,13 @@ class ViewController: UIViewController {
         view.addSubview(navButton)
         view.addSubview(searchButton)
         view.addSubview(gearButton)
+        view.addSubview(cityInputTextField)
     }
+    
+    @objc func searchButtonTapped(){
+        cityInputTextField.isHidden.toggle()
+    }
+    
     
     @objc func gearButtonTapped () {
         weatherConditionsSegmentedControl.isHidden = false
@@ -144,12 +170,12 @@ class ViewController: UIViewController {
     
     @objc func handleAnimate() {
         
-           UIView.animate(withDuration: 40) { //30
-               
-               self.backgroundImageView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: -500).isActive = true
-               
-               self.view.layoutIfNeeded()
-            }
+        UIView.animate(withDuration: 40) { //30
+            
+            self.backgroundImageView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: -500).isActive = true
+            
+            self.view.layoutIfNeeded()
+        }
     }
     
     @objc func dayNightSegmentedControlDidChange(_ segmentedControl: UISegmentedControl) {
@@ -212,8 +238,8 @@ class ViewController: UIViewController {
         
         backgroundImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
         backgroundImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 000).isActive = true
-    
-        cityLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30).isActive = true
+        
+        cityLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 60).isActive = true
         cityLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         
         temperatureLabel.topAnchor.constraint(equalTo: cityLabel.bottomAnchor, constant: 0).isActive = true
@@ -230,6 +256,10 @@ class ViewController: UIViewController {
         weatherConditionsSegmentedControl.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10).isActive = true
         weatherConditionsSegmentedControl.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10).isActive = true
         
+        cityInputTextField.topAnchor.constraint(equalTo: weatherConditionsLabel.bottomAnchor, constant: 20).isActive = true
+        cityInputTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10).isActive = true
+        cityInputTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10).isActive = true
+        
         navButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
         navButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10).isActive = true
         
@@ -241,3 +271,50 @@ class ViewController: UIViewController {
     }
 }
 
+extension UITextField {
+
+    enum PaddingSide {
+        case left(CGFloat)
+        case right(CGFloat)
+        case both(CGFloat)
+    }
+
+    func addPadding(_ padding: PaddingSide) {
+
+        self.leftViewMode = .always
+        self.layer.masksToBounds = true
+
+
+        switch padding {
+
+        case .left(let spacing):
+            let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: spacing, height: self.frame.height))
+            self.leftView = paddingView
+            self.rightViewMode = .always
+
+        case .right(let spacing):
+            let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: spacing, height: self.frame.height))
+            self.rightView = paddingView
+            self.rightViewMode = .always
+
+        case .both(let spacing):
+            let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: spacing, height: self.frame.height))
+            // left
+            self.leftView = paddingView
+            self.leftViewMode = .always
+            // right
+            self.rightView = paddingView
+            self.rightViewMode = .always
+        }
+    }
+    
+    // 1.  To add left padding
+    //yourTextFieldName.addPadding(.left(20))
+
+    // 2.  To add right padding
+    //yourTextFieldName.addPadding(.right(20))
+
+    // 3. To add left & right padding both
+    //yourTextFieldName.addPadding(.both(20))
+    
+}
