@@ -117,7 +117,7 @@ class ViewController: UIViewController {
         
         
 //
-           UIView.animate(withDuration: 3) {
+           UIView.animate(withDuration: 20) {
                
                self.backgroundImageView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: -500).isActive = true
                
