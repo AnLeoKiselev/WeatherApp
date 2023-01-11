@@ -117,7 +117,7 @@ class ViewController: UIViewController {
         
         
 //
-           UIView.animate(withDuration: 20) {
+           UIView.animate(withDuration: 30) {
                
                self.backgroundImageView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: -500).isActive = true
                
@@ -164,8 +164,8 @@ class ViewController: UIViewController {
     @objc func weatherConditionsSegmentedControlDidChange(_ segmentedControl: UISegmentedControl) {
         switch segmentedControl.selectedSegmentIndex {
         case 0:
-            backgroundImageView.image = UIImage(named: //"clear_sky\(dayOrNight)")
-            "c")
+            backgroundImageView.image = UIImage(named: "clear_sky\(dayOrNight)")
+            
             //handleAnimate()
             let generator = UISelectionFeedbackGenerator()
             generator.selectionChanged()
