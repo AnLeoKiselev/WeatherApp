@@ -13,6 +13,27 @@ class ViewController: UIViewController {
     var firstConstraintsPosition: Bool = true
     var backgroundImage = "clear_sky_day"
     
+//    private lazy var navButton: UIButton = {
+//    let image = UIImage(systemName: "location.circle.fill")
+//    //button = UIImage.SymbolConfiguration(pointSize: 140, weight: .bold, scale: .large)
+//    //let largeBoldDoc = UIImage(systemName: "doc.circle.fill")
+//    button.setImage(largeBoldDoc, for: .normal)
+//        return button
+//    }()
+    
+    private lazy var navButton: UIButton = {
+        let button = UIButton(type: .system)
+        
+        let config = UIImage.SymbolConfiguration(
+            pointSize: 35, weight: .medium, scale: .default)
+        let image = UIImage(systemName: "location.circle.fill", withConfiguration: config)?.withTintColor(.white, renderingMode:.alwaysOriginal)
+        
+        button.setImage(image, for: .normal)
+
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+        } ()
+    
     private lazy var cityLabel: UILabel = {
         let label = UILabel()
         label.text = "Moscow"
@@ -90,11 +111,12 @@ class ViewController: UIViewController {
         view.addSubview(weatherConditionsLabel)
         view.addSubview(weatherConditionsSegmentedControl)
         view.addSubview(dayNightSegmentedControl)
+        view.addSubview(navButton)
     }
     
     @objc func handleAnimate() {
         
-           UIView.animate(withDuration: 5) { //30
+           UIView.animate(withDuration: 40) { //30
                
                self.backgroundImageView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: -500).isActive = true
                
@@ -161,7 +183,7 @@ class ViewController: UIViewController {
     private func setSubviewsLayouts() {
         
         backgroundImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
-        self.backgroundImageView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 000).isActive = true
+        backgroundImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 000).isActive = true
     
         cityLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30).isActive = true
         cityLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
@@ -179,6 +201,10 @@ class ViewController: UIViewController {
         weatherConditionsSegmentedControl.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
         weatherConditionsSegmentedControl.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10).isActive = true
         weatherConditionsSegmentedControl.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10).isActive = true
+        
+        navButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
+        navButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10).isActive = true
+        
     }
 }
 
