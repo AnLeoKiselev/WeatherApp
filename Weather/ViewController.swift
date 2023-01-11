@@ -12,7 +12,7 @@ class ViewController: UIViewController {
    // var rightAnchor2: NSLayoutConstraint?
     //var leftAnchor1: NSLayoutConstraint?
     //var leftAnchor2: NSLayoutConstraint?
-    var dayOrNight: String = ""
+    var dayOrNight: String = "_day"
     var firstConstraintsPosition: Bool = true
     
     private lazy var cityLabel: UILabel = {
@@ -117,7 +117,7 @@ class ViewController: UIViewController {
         
         
 //
-           UIView.animate(withDuration: 30) {
+           UIView.animate(withDuration: 5) { //30
                
                self.backgroundImageView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: -500).isActive = true
                
