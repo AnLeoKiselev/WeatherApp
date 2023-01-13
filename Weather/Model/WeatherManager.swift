@@ -57,8 +57,11 @@ struct WeatherManager {
             let icon = decodedData.weather[0].icon
             let temp = decodedData.main.temp
             let name = decodedData.name
+            let description = decodedData.weather[0].description
+            let feelsLike = decodedData.main.feels_like
             
-            let weather = WeatherModel(conditionId: icon, cityName: name, temperature: temp)
+            let weather = WeatherModel(iconId: icon, cityName: name, temperature: temp, description: description, feelsLike: feelsLike)
+            
             return weather
             
         } catch {

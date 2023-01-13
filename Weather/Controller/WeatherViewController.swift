@@ -45,11 +45,12 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
     //NSAttributedString(string: "Enter city", attributes: [NSAttributedString.Key.foregroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)])
         textField.enablesReturnKeyAutomatically = true
         textField.textColor = .white
-        textField.layer.borderWidth = 2
-        textField.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        //textField.layer.borderWidth = 2
+        //textField.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         textField.layer.cornerRadius = 8
+        textField.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.5)
         
-        textField.font = .systemFont(ofSize: 23, weight: .regular)
+        textField.font = .systemFont(ofSize: 26, weight: .regular)
         textField.keyboardType = .default //тип клавиатуры
         textField.keyboardAppearance = .dark
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -61,7 +62,7 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
     private lazy var gearButton: UIButton = {
         let button = UIButton(type: .system)
         let config = UIImage.SymbolConfiguration(
-            pointSize: 33, weight: .medium, scale: .default)
+            pointSize: 32, weight: .medium, scale: .default)
         let image = UIImage(systemName: "gear", withConfiguration: config)?.withTintColor(.white, renderingMode:.alwaysOriginal)
         button.setImage(image, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -71,7 +72,7 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
     
     private lazy var cityLabel: UILabel = {
         let label = UILabel()
-        label.text = "Moscow"
+        label.text = ""
         label.textColor = .white
         label.font = .systemFont(ofSize: 37, weight: .regular)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -80,7 +81,7 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
     
     private lazy var temperatureLabel: UILabel = {
         let label = UILabel()
-        label.text = "-22\u{00B0}"
+        label.text = ""
         label.textColor = .white
         label.font = .systemFont(ofSize: 100, weight: .thin)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -89,9 +90,18 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
     
     private lazy var weatherConditionsLabel: UILabel = {
         let label = UILabel()
-        label.text = "Sunny"
+        label.text = ""
         label.textColor = .white
-        label.font = .systemFont(ofSize: 30, weight: .regular)
+        label.font = .systemFont(ofSize: 27, weight: .regular)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var feelsLikeLabel: UILabel = {
+        let label = UILabel()
+        label.text = ""
+        label.textColor = .white
+        label.font = .systemFont(ofSize: 22, weight: .regular)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -153,6 +163,7 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         view.addSubview(searchButton)
         view.addSubview(gearButton)
         view.addSubview(cityInputTextField)
+        view.addSubview(feelsLikeLabel)
     }
     
     @objc func searchButtonTapped(){
@@ -162,6 +173,8 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
             weatherManager.fetchWeather(cityName: city)
         }
         cityInputTextField.text = ""
+        
+        handleAnimate()
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -258,9 +271,11 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
     func didUpdateWeather (_ weatherManager: WeatherManager, weather: WeatherModel) {
         DispatchQueue.main.async {
             self.temperatureLabel.text = weather.temperatureString
-            
-            WeatherModel(conditionId: <#T##Int#>, cityName: <#T##String#>, temperature: <#T##Double#>)
-            
+            self.cityLabel.text = weather.cityName
+            self.weatherConditionsLabel.text = weather.description
+            self.feelsLikeLabel.text = "feels like: \(weather.feelsLikeString)"
+            self.backgroundImageView.image = UIImage(named: weather.conditionName)
+            print (weather.conditionName)
         }
     }
     
@@ -285,6 +300,9 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         weatherConditionsLabel.topAnchor.constraint(equalTo: temperatureLabel.bottomAnchor, constant: 0).isActive = true
         weatherConditionsLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         
+        feelsLikeLabel.topAnchor.constraint(equalTo: weatherConditionsLabel.bottomAnchor, constant: 10).isActive = true
+        feelsLikeLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+        
         dayNightSegmentedControl.bottomAnchor.constraint(equalTo: weatherConditionsSegmentedControl.topAnchor, constant: -20).isActive = true
         dayNightSegmentedControl.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10).isActive = true
         dayNightSegmentedControl.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10).isActive = true
@@ -293,19 +311,19 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         weatherConditionsSegmentedControl.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10).isActive = true
         weatherConditionsSegmentedControl.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10).isActive = true
         
-        cityInputTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
-        cityInputTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 55).isActive = true
-        cityInputTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -55).isActive = true
-        cityInputTextField.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        cityInputTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 21).isActive = true
+        cityInputTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 70).isActive = true
+        cityInputTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -70).isActive = true
+        cityInputTextField.heightAnchor.constraint(equalToConstant: 37).isActive = true
         
         navButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
-        navButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10).isActive = true
+        navButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 15).isActive = true
         
         searchButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
-        searchButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10).isActive = true
+        searchButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -15).isActive = true
         
         gearButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
-        gearButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10).isActive = true
+        gearButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -15).isActive = true
     }
 }
 
