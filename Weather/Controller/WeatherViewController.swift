@@ -7,17 +7,17 @@
 
 import UIKit
 
-class ViewController: UIViewController {
-    
+class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManagerDelegate {
+   
     var dayOrNight: String = "_day"
     var firstConstraintsPosition: Bool = true
     var backgroundImage = "clear_sky_day"
     
     var backgroundLeftAnchor1: NSLayoutConstraint?
     var backgroundLeftAnchor2: NSLayoutConstraint?
+    
+    var weatherManager = WeatherManager()
 
-    
-    
     private lazy var navButton: UIButton = {
         let button = UIButton(type: .system)
         let config = UIImage.SymbolConfiguration(
@@ -41,8 +41,8 @@ class ViewController: UIViewController {
     
     private lazy var cityInputTextField: UITextField = {
         let textField = UITextField()
-        textField.attributedPlaceholder =
-        NSAttributedString(string: "Enter city", attributes: [NSAttributedString.Key.foregroundColor: UIColor.init(_colorLiteralRed: 0.6904429793, green: 0.6597178578, blue: 0.8047469258, alpha: 0.5)])
+        textField.placeholder = "Enter city"
+    //NSAttributedString(string: "Enter city", attributes: [NSAttributedString.Key.foregroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)])
         textField.enablesReturnKeyAutomatically = true
         textField.textColor = .white
         textField.layer.borderWidth = 2
@@ -54,7 +54,7 @@ class ViewController: UIViewController {
         textField.keyboardAppearance = .dark
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.isHidden = true
-        textField.addPadding(.both(10))
+        textField.textAlignment = .center
         return textField
     }()
     
@@ -137,6 +137,7 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        weatherManager.delegate = self
         addToSubview()
         setSubviewsLayouts()
     }
@@ -156,9 +157,34 @@ class ViewController: UIViewController {
     
     @objc func searchButtonTapped(){
         cityInputTextField.isHidden.toggle()
+        cityInputTextField.endEditing(true) //скрывает клавиатуру
+        if let city = cityInputTextField.text {
+            weatherManager.fetchWeather(cityName: city)
+        }
+        cityInputTextField.text = ""
     }
     
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        cityInputTextField.endEditing(true) //скрывает клавиатуру
+        return true
+    }
     
+    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+        if cityInputTextField.text != "" {
+            return true
+        } else {
+            cityInputTextField.placeholder = "Type something"
+            return false
+        }
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        if let city = cityInputTextField.text {
+            weatherManager.fetchWeather(cityName: city)
+        }
+        cityInputTextField.text = ""
+    }
+   
     @objc func gearButtonTapped () {
         weatherConditionsSegmentedControl.isHidden = false
         dayNightSegmentedControl.isHidden = false
@@ -166,12 +192,9 @@ class ViewController: UIViewController {
     }
     
     @objc func handleAnimate() {
-        
         UIView.animate(withDuration: 10) { //40
-            
             self.backgroundLeftAnchor2?.isActive.toggle()
             self.backgroundLeftAnchor1?.isActive.toggle()
-            
             self.view.layoutIfNeeded()
         }
     }
@@ -232,17 +255,26 @@ class ViewController: UIViewController {
         }
     }
     
+    func didUpdateWeather (_ weatherManager: WeatherManager, weather: WeatherModel) {
+        DispatchQueue.main.async {
+            self.temperatureLabel.text = weather.temperatureString
+        }
+    }
+    
+    func didFailWithError(error: Error) {
+        print(error)
+    }
+    
+    
     private func setSubviewsLayouts() {
         
         backgroundImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
-        
         backgroundLeftAnchor1 = backgroundImageView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: -500)
         backgroundLeftAnchor1?.isActive = false
-        
         backgroundLeftAnchor2 = backgroundImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 000)
         backgroundLeftAnchor2?.isActive = true
 
-        cityLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 60).isActive = true
+        cityLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 80).isActive = true
         cityLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         
         temperatureLabel.topAnchor.constraint(equalTo: cityLabel.bottomAnchor, constant: 0).isActive = true
@@ -259,9 +291,9 @@ class ViewController: UIViewController {
         weatherConditionsSegmentedControl.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10).isActive = true
         weatherConditionsSegmentedControl.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10).isActive = true
         
-        cityInputTextField.topAnchor.constraint(equalTo: weatherConditionsLabel.bottomAnchor, constant: 20).isActive = true
-        cityInputTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10).isActive = true
-        cityInputTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10).isActive = true
+        cityInputTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
+        cityInputTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 55).isActive = true
+        cityInputTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -55).isActive = true
         cityInputTextField.heightAnchor.constraint(equalToConstant: 40).isActive = true
         
         navButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
@@ -275,50 +307,3 @@ class ViewController: UIViewController {
     }
 }
 
-extension UITextField {
-
-    enum PaddingSide {
-        case left(CGFloat)
-        case right(CGFloat)
-        case both(CGFloat)
-    }
-
-    func addPadding(_ padding: PaddingSide) {
-
-        self.leftViewMode = .always
-        self.layer.masksToBounds = true
-
-
-        switch padding {
-
-        case .left(let spacing):
-            let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: spacing, height: self.frame.height))
-            self.leftView = paddingView
-            self.rightViewMode = .always
-
-        case .right(let spacing):
-            let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: spacing, height: self.frame.height))
-            self.rightView = paddingView
-            self.rightViewMode = .always
-
-        case .both(let spacing):
-            let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: spacing, height: self.frame.height))
-            // left
-            self.leftView = paddingView
-            self.leftViewMode = .always
-            // right
-            self.rightView = paddingView
-            self.rightViewMode = .always
-        }
-    }
-    
-    // 1.  To add left padding
-    //yourTextFieldName.addPadding(.left(20))
-
-    // 2.  To add right padding
-    //yourTextFieldName.addPadding(.right(20))
-
-    // 3. To add left & right padding both
-    //yourTextFieldName.addPadding(.both(20))
-    
-}
