@@ -46,13 +46,21 @@ class ViewController: UIViewController {
         let textField = UITextField()
         textField.attributedPlaceholder =
         NSAttributedString(string: "Enter city", attributes: [NSAttributedString.Key.foregroundColor: UIColor.init(_colorLiteralRed: 0.6904429793, green: 0.6597178578, blue: 0.8047469258, alpha: 0.5)])
+//        textField.attributedPlaceholder =
+//        NSAttributedString(string: " Enter city", attributes: [NSAttributedString.Key.foregroundColor : UIColor.white]) // new_Password : our text feild name
+        
+//        textField.attributedPlaceholder = NSAttributedString(string: " Enter city", attributes: [
+//            .foregroundColor: UIColor.lightGray,
+//            .font: UIFont.boldSystemFont(ofSize: 20.0)
+//        ])
+        
         textField.enablesReturnKeyAutomatically = true
         textField.textColor = .white
         textField.layer.borderWidth = 1
         textField.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         textField.layer.cornerRadius = 8
         
-        textField.font = .systemFont(ofSize: 27, weight: .regular)
+        textField.font = .systemFont(ofSize: 23, weight: .regular)
         textField.keyboardType = .default //тип клавиатуры
         textField.keyboardAppearance = .dark
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -259,6 +267,7 @@ class ViewController: UIViewController {
         cityInputTextField.topAnchor.constraint(equalTo: weatherConditionsLabel.bottomAnchor, constant: 20).isActive = true
         cityInputTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10).isActive = true
         cityInputTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10).isActive = true
+        cityInputTextField.heightAnchor.constraint(equalToConstant: 40).isActive = true
         
         navButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
         navButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10).isActive = true
