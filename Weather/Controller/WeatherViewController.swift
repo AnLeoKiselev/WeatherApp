@@ -73,7 +73,7 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         let label = UILabel()
         label.text = "Moscow"
         label.textColor = .white
-        label.font = .systemFont(ofSize: 40, weight: .regular)
+        label.font = .systemFont(ofSize: 37, weight: .regular)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -258,13 +258,15 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
     func didUpdateWeather (_ weatherManager: WeatherManager, weather: WeatherModel) {
         DispatchQueue.main.async {
             self.temperatureLabel.text = weather.temperatureString
+            
+            WeatherModel(conditionId: <#T##Int#>, cityName: <#T##String#>, temperature: <#T##Double#>)
+            
         }
     }
     
     func didFailWithError(error: Error) {
         print(error)
     }
-    
     
     private func setSubviewsLayouts() {
         
