@@ -13,13 +13,10 @@ class ViewController: UIViewController {
     var firstConstraintsPosition: Bool = true
     var backgroundImage = "clear_sky_day"
     
-    //    private lazy var navButton: UIButton = {
-    //    let image = UIImage(systemName: "location.circle.fill")
-    //    //button = UIImage.SymbolConfiguration(pointSize: 140, weight: .bold, scale: .large)
-    //    //let largeBoldDoc = UIImage(systemName: "doc.circle.fill")
-    //    button.setImage(largeBoldDoc, for: .normal)
-    //        return button
-    //    }()
+    var backgroundLeftAnchor1: NSLayoutConstraint?
+    var backgroundLeftAnchor2: NSLayoutConstraint?
+
+    
     
     private lazy var navButton: UIButton = {
         let button = UIButton(type: .system)
@@ -46,17 +43,9 @@ class ViewController: UIViewController {
         let textField = UITextField()
         textField.attributedPlaceholder =
         NSAttributedString(string: "Enter city", attributes: [NSAttributedString.Key.foregroundColor: UIColor.init(_colorLiteralRed: 0.6904429793, green: 0.6597178578, blue: 0.8047469258, alpha: 0.5)])
-//        textField.attributedPlaceholder =
-//        NSAttributedString(string: " Enter city", attributes: [NSAttributedString.Key.foregroundColor : UIColor.white]) // new_Password : our text feild name
-        
-//        textField.attributedPlaceholder = NSAttributedString(string: " Enter city", attributes: [
-//            .foregroundColor: UIColor.lightGray,
-//            .font: UIFont.boldSystemFont(ofSize: 20.0)
-//        ])
-        
         textField.enablesReturnKeyAutomatically = true
         textField.textColor = .white
-        textField.layer.borderWidth = 1
+        textField.layer.borderWidth = 2
         textField.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         textField.layer.cornerRadius = 8
         
@@ -178,9 +167,10 @@ class ViewController: UIViewController {
     
     @objc func handleAnimate() {
         
-        UIView.animate(withDuration: 40) { //30
+        UIView.animate(withDuration: 10) { //40
             
-            self.backgroundImageView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: -500).isActive = true
+            self.backgroundLeftAnchor2?.isActive.toggle()
+            self.backgroundLeftAnchor1?.isActive.toggle()
             
             self.view.layoutIfNeeded()
         }
@@ -245,8 +235,13 @@ class ViewController: UIViewController {
     private func setSubviewsLayouts() {
         
         backgroundImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
-        backgroundImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 000).isActive = true
         
+        backgroundLeftAnchor1 = backgroundImageView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: -500)
+        backgroundLeftAnchor1?.isActive = false
+        
+        backgroundLeftAnchor2 = backgroundImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 000)
+        backgroundLeftAnchor2?.isActive = true
+
         cityLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 60).isActive = true
         cityLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         
