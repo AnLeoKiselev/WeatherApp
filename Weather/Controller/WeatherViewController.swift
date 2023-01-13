@@ -11,7 +11,7 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
    
     var dayOrNight: String = "_day"
     var firstConstraintsPosition: Bool = true
-    var backgroundImage = "clear_sky_day"
+    var backgroundImage = ""
     
     var backgroundLeftAnchor1: NSLayoutConstraint?
     var backgroundLeftAnchor2: NSLayoutConstraint?
@@ -49,7 +49,7 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         //textField.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         textField.layer.cornerRadius = 8
         textField.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.5)
-        
+         
         textField.font = .systemFont(ofSize: 26, weight: .regular)
         textField.keyboardType = .default //тип клавиатуры
         textField.keyboardAppearance = .dark
@@ -75,6 +75,7 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         label.text = ""
         label.textColor = .white
         label.font = .systemFont(ofSize: 37, weight: .regular)
+        label.shadowColor = .black
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -84,6 +85,7 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         label.text = ""
         label.textColor = .white
         label.font = .systemFont(ofSize: 100, weight: .thin)
+        label.shadowColor = .black
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -93,6 +95,7 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         label.text = ""
         label.textColor = .white
         label.font = .systemFont(ofSize: 27, weight: .regular)
+        label.shadowColor = .black
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -102,6 +105,7 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         label.text = ""
         label.textColor = .white
         label.font = .systemFont(ofSize: 22, weight: .regular)
+        label.shadowColor = .black
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -150,6 +154,7 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         weatherManager.delegate = self
         addToSubview()
         setSubviewsLayouts()
+        weatherManager.fetchWeather(cityName: "Moscow")
     }
     
     private func addToSubview() {
@@ -275,7 +280,8 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
             self.weatherConditionsLabel.text = weather.description
             self.feelsLikeLabel.text = "feels like: \(weather.feelsLikeString)"
             self.backgroundImageView.image = UIImage(named: weather.conditionName)
-            print (weather.conditionName)
+            //self.handleAnimate()
+            print(weather.conditionName)
         }
     }
     
