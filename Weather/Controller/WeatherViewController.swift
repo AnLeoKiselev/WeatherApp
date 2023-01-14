@@ -154,11 +154,11 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         weatherManager.delegate = self
         addToSubview()
         setSubviewsLayouts()
-        weatherManager.fetchWeather(cityName: "Moscow")
+        //weatherManager.fetchWeather(cityName: "Moscow")
         
-        let notificationCenter = NotificationCenter.default
-        notificationCenter.addObserver(self, selector: #selector(appMovedToForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
-        
+//        let notificationCenter = NotificationCenter.default
+//        notificationCenter.addObserver(self, selector: #selector(appMovedToForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
+//
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -190,19 +190,19 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         handleAnimate()
     }
     
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        cityInputTextField.endEditing(true) //скрывает клавиатуру
-        return true
-    }
+//    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+//        cityInputTextField.endEditing(true) //скрывает клавиатуру
+//        return true
+//    }
     
-    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
-        if cityInputTextField.text != "" {
-            return true
-        } else {
-            cityInputTextField.placeholder = "Type something"
-            return false
-        }
-    }
+//    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+//        if cityInputTextField.text != "" {
+//            return true
+//        } else {
+//            cityInputTextField.placeholder = "Type something"
+//            return false
+//        }
+//    }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         if let city = cityInputTextField.text {
@@ -211,10 +211,10 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         cityInputTextField.text = ""
     }
    
-    @objc func appMovedToForeground() {
-        weatherManager.fetchWeather(cityName: "Moscow")
-        print("App moved to ForeGround!")
-    }
+//    @objc func appMovedToForeground() {
+//        weatherManager.fetchWeather(cityName: "Moscow")
+//        print("App moved to ForeGround!")
+//    }
     
     @objc func gearButtonTapped () {
         weatherConditionsSegmentedControl.isHidden = false
@@ -223,7 +223,7 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
     }
     
     @objc func handleAnimate() {
-        UIView.animate(withDuration: 10) { //40
+        UIView.animate(withDuration: 20) { //40
             self.backgroundLeftAnchor2?.isActive.toggle()
             self.backgroundLeftAnchor1?.isActive.toggle()
             self.view.layoutIfNeeded()
@@ -253,7 +253,7 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
             let generator = UISelectionFeedbackGenerator()
             generator.selectionChanged()
         case 1:
-            backgroundImageView.image = UIImage(named: "clouds\(dayOrNight)")
+            backgroundImageView.image = UIImage(named: "few_clouds\(dayOrNight)")
             let generator = UISelectionFeedbackGenerator()
             generator.selectionChanged()
         case 2:
