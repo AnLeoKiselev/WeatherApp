@@ -155,8 +155,17 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         addToSubview()
         setSubviewsLayouts()
         weatherManager.fetchWeather(cityName: "Moscow")
+        
+        let notificationCenter = NotificationCenter.default
+        notificationCenter.addObserver(self, selector: #selector(appMovedToForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
+        
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        weatherManager.fetchWeather(cityName: "Moscow")
+        handleAnimate()
+    }
+
     private func addToSubview() {
         view.addSubview(backgroundImageView)
         view.addSubview(temperatureLabel)
@@ -178,7 +187,6 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
             weatherManager.fetchWeather(cityName: city)
         }
         cityInputTextField.text = ""
-        
         handleAnimate()
     }
     
@@ -203,6 +211,11 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         cityInputTextField.text = ""
     }
    
+    @objc func appMovedToForeground() {
+        weatherManager.fetchWeather(cityName: "Moscow")
+        print("App moved to ForeGround!")
+    }
+    
     @objc func gearButtonTapped () {
         weatherConditionsSegmentedControl.isHidden = false
         dayNightSegmentedControl.isHidden = false
@@ -286,7 +299,7 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
     }
     
     func didFailWithError(error: Error) {
-        print(error)
+        print ("ЕРРОР\(error)")
     }
     
     private func setSubviewsLayouts() {
