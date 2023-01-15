@@ -52,7 +52,6 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         //textField.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         textField.layer.cornerRadius = 8
         textField.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.5)
-         
         textField.font = .systemFont(ofSize: 26, weight: .regular)
         textField.keyboardType = .default //тип клавиатуры
         textField.keyboardAppearance = .dark
@@ -166,14 +165,10 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         setSubviewsLayouts()
         //weatherManager.fetchWeather(cityName: "Moscow")
         
-//        let notificationCenter = NotificationCenter.default
-//        notificationCenter.addObserver(self, selector: #selector(appMovedToForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
-//
     }
-    
     override func viewDidAppear(_ animated: Bool) {
-        //weatherManager.fetchWeather(cityName: "")
-        //handleAnimate()
+        weatherManager.fetchWeather(cityName: "Moscow")
+        handleAnimate()
     }
 
     private func addToSubview() {
@@ -210,6 +205,7 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         //handleAnimate()
         //locationManager()
         locationManager.requestLocation()
+        handleAnimate()
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
