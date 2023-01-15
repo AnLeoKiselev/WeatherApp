@@ -31,6 +31,13 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         return button
     } ()
     
+    private lazy var spinner: UIActivityIndicatorView = {
+        let spinner = UIActivityIndicatorView()
+        spinner.color = .black
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+        return spinner
+    } ()
+    
     private lazy var searchButton: UIButton = {
         let button = UIButton(type: .system)
         let config = UIImage.SymbolConfiguration(
@@ -44,14 +51,11 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
     
     private lazy var cityInputTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Enter city"
-    //NSAttributedString(string: "Enter city", attributes: [NSAttributedString.Key.foregroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)])
+        //textField.placeholder = "Enter city"
         textField.enablesReturnKeyAutomatically = true
-        textField.textColor = .white
-        //textField.layer.borderWidth = 2
-        //textField.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        textField.textColor = .black
         textField.layer.cornerRadius = 8
-        textField.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.5)
+        textField.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         textField.font = .systemFont(ofSize: 26, weight: .regular)
         textField.keyboardType = .default //тип клавиатуры
         textField.keyboardAppearance = .dark
@@ -114,7 +118,6 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
     
     private lazy var backgroundImageView: UIImageView = {
         let imageView = UIImageView()
-        //imageView.backgroundColor = #colorLiteral(red: 0.5384959211, green: 0.5384959211, blue: 0.5384959211, alpha: 1)
         imageView.image = UIImage(named: backgroundImage)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.isUserInteractionEnabled = true
@@ -127,9 +130,6 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         let segmentedControl = UISegmentedControl(items: items)
         segmentedControl.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         segmentedControl.layer.borderWidth = 1
-        //segmentedControl.selectedSegmentTintColor = .black
-        //segmentedControl.selectedSegmentTintColor = #colorLiteral(red: 0.5654026866, green: 0.4771631956, blue: 0.8172003031, alpha: 1)
-        //segmentedControl.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         segmentedControl.translatesAutoresizingMaskIntoConstraints = false
         segmentedControl.addTarget(self, action: #selector(dayNightSegmentedControlDidChange(_:)), for:.valueChanged)
         segmentedControl.selectedSegmentIndex = 0
@@ -142,8 +142,6 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         let segmentedControl = UISegmentedControl(items: items)
         segmentedControl.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         segmentedControl.layer.borderWidth = 1
-        //segmentedControl.selectedSegmentTintColor = #colorLiteral(red: 0.5654026866, green: 0.4771631956, blue: 0.8172003031, alpha: 1)
-        //segmentedControl.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         segmentedControl.translatesAutoresizingMaskIntoConstraints = false
         segmentedControl.addTarget(self, action: #selector(weatherConditionsSegmentedControlDidChange(_:)), for:.valueChanged)
         segmentedControl.selectedSegmentIndex = 0
@@ -156,19 +154,17 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
-        locationManager.requestLocation()
-        
+       
         weatherManager.delegate = self
         cityInputTextField.delegate = self
         
         addToSubview()
         setSubviewsLayouts()
-        //weatherManager.fetchWeather(cityName: "Moscow")
-        
     }
     override func viewDidAppear(_ animated: Bool) {
         weatherManager.fetchWeather(cityName: "Moscow")
         handleAnimate()
+        print ("ViewDidAppear")
     }
 
     private func addToSubview() {
@@ -183,6 +179,7 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         view.addSubview(gearButton)
         view.addSubview(cityInputTextField)
         view.addSubview(feelsLikeLabel)
+        view.addSubview(spinner)
     }
     
     @objc func searchButtonTapped(){
@@ -196,14 +193,7 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
     }
     
     @objc func navButtonTapped(){
-        //cityInputTextField.isHidden.toggle()
-        //cityInputTextField.endEditing(true) //скрывает клавиатуру
-        //if let city = cityInputTextField.text {
-            //weatherManager.fetchWeather(cityName: city)
-        //}
-        //cityInputTextField.text = ""
-        //handleAnimate()
-        //locationManager()
+        spinner.startAnimating()
         locationManager.requestLocation()
         handleAnimate()
     }
@@ -226,14 +216,10 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         if let city = cityInputTextField.text {
             weatherManager.fetchWeather(cityName: city)
         }
+        cityInputTextField.isHidden.toggle()
         cityInputTextField.text = ""
     }
    
-//    @objc func appMovedToForeground() {
-//        weatherManager.fetchWeather(cityName: "Moscow")
-//        print("App moved to ForeGround!")
-//    }
-    
     @objc func gearButtonTapped () {
         weatherConditionsSegmentedControl.isHidden = false
         dayNightSegmentedControl.isHidden = false
@@ -276,12 +262,10 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
             generator.selectionChanged()
         case 2:
             backgroundImageView.image = UIImage(named: "shower_rain\(dayOrNight)")
-            //handleAnimate()
             let generator = UISelectionFeedbackGenerator()
             generator.selectionChanged()
         case 3:
             backgroundImageView.image = UIImage(named: "rain\(dayOrNight)")
-            //handleAnimate()
             let generator = UISelectionFeedbackGenerator()
             generator.selectionChanged()
         case 4:
@@ -291,12 +275,10 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
             generator.selectionChanged()
         case 5:
             backgroundImageView.image = UIImage(named: "snow\(dayOrNight)")
-            //handleAnimate()
             let generator = UISelectionFeedbackGenerator()
             generator.selectionChanged()
         case 6:
             backgroundImageView.image = UIImage(named: "mist\(dayOrNight)")
-            //handleAnimate()
             let generator = UISelectionFeedbackGenerator()
             generator.selectionChanged()
         default:
@@ -311,13 +293,13 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
             self.weatherConditionsLabel.text = weather.description
             self.feelsLikeLabel.text = "feels like: \(weather.feelsLikeString)"
             self.backgroundImageView.image = UIImage(named: weather.conditionName)
-            //self.handleAnimate()
+            self.spinner.stopAnimating()
             print(weather.conditionName)
         }
     }
     
     func didFailWithError(error: Error) {
-        print ("ЕРРОР\(error)")
+        print ("ЕRRОR: \(error)")
     }
     
     private func setSubviewsLayouts() {
@@ -356,6 +338,9 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         navButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
         navButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 15).isActive = true
         
+        spinner.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30).isActive = true
+        spinner.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25).isActive = true
+        
         searchButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
         searchButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -15).isActive = true
         
@@ -376,7 +361,7 @@ extension WeatherViewController: CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print (error)
+        print ("ERROR2: \(error)")
     }
 }
 
