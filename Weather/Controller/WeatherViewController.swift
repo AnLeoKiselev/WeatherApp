@@ -53,13 +53,15 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         let textField = UITextField()
         //textField.placeholder = "Enter city"
         textField.enablesReturnKeyAutomatically = true
-        textField.textColor = .black
+        textField.textColor = .white
         textField.layer.cornerRadius = 8
-        textField.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        textField.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.5)
         textField.font = .systemFont(ofSize: 26, weight: .regular)
         textField.keyboardType = .default //тип клавиатуры
         textField.keyboardAppearance = .dark
         textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.layer.borderWidth = 1
+        textField.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         textField.isHidden = true
         textField.textAlignment = .center
         return textField
@@ -160,11 +162,13 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         
         addToSubview()
         setSubviewsLayouts()
-    }
+        
+        hideKeyboardWhenTappedAround() //клава убирается после тапа везде
+        }
+    
     override func viewDidAppear(_ animated: Bool) {
         weatherManager.fetchWeather(cityName: "Moscow")
         handleAnimate()
-        print ("ViewDidAppear")
     }
 
     private func addToSubview() {
@@ -185,11 +189,14 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
     @objc func searchButtonTapped(){
         cityInputTextField.isHidden.toggle()
         cityInputTextField.endEditing(true) //скрывает клавиатуру
-        if let city = cityInputTextField.text {
-            weatherManager.fetchWeather(cityName: city)
-        }
-        cityInputTextField.text = ""
-        handleAnimate()
+//        if let city = cityInputTextField.text {
+//            if cityInputTextField.text != "" {
+//                cityInputTextField.isHidden = true
+//                handleAnimate()
+//                weatherManager.fetchWeather(cityName: city)
+//                cityInputTextField.text = ""
+//                print ("вот")}
+       // }
     }
     
     @objc func navButtonTapped(){
@@ -203,20 +210,20 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         return true
     }
     
-    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
-        if cityInputTextField.text != "" {
-            return true
-        } else {
-            cityInputTextField.placeholder = "Type something"
-            return false
-        }
-    }
+//    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+//        if cityInputTextField.text != "" {
+//            return true
+//        } else {
+//            cityInputTextField.placeholder = "Type something"
+//            return false
+//        }
+//    }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         if let city = cityInputTextField.text {
             weatherManager.fetchWeather(cityName: city)
         }
-        cityInputTextField.isHidden.toggle()
+        cityInputTextField.isHidden = true
         cityInputTextField.text = ""
     }
    
@@ -365,3 +372,15 @@ extension WeatherViewController: CLLocationManagerDelegate {
     }
 }
 
+//клава убирается после тапа везде
+extension UIViewController {
+    func hideKeyboardWhenTappedAround() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+    
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
+}
