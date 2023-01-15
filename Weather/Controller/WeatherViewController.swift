@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreLocation
 
 class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManagerDelegate {
    
@@ -17,6 +18,7 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
     var backgroundLeftAnchor2: NSLayoutConstraint?
     
     var weatherManager = WeatherManager()
+    let locationManager = CLLocationManager()
 
     private lazy var navButton: UIButton = {
         let button = UIButton(type: .system)
@@ -24,6 +26,7 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
             pointSize: 34, weight: .medium, scale: .default)
         let image = UIImage(systemName: "location.circle.fill", withConfiguration: config)?.withTintColor(.white, renderingMode:.alwaysOriginal)
         button.setImage(image, for: .normal)
+        button.addTarget(self, action: #selector(navButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     } ()
@@ -151,7 +154,14 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.requestLocation()
+        
         weatherManager.delegate = self
+        cityInputTextField.delegate = self
+        
         addToSubview()
         setSubviewsLayouts()
         //weatherManager.fetchWeather(cityName: "Moscow")
@@ -162,8 +172,8 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        weatherManager.fetchWeather(cityName: "Moscow")
-        handleAnimate()
+        //weatherManager.fetchWeather(cityName: "")
+        //handleAnimate()
     }
 
     private func addToSubview() {
@@ -190,19 +200,31 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         handleAnimate()
     }
     
-//    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-//        cityInputTextField.endEditing(true) //скрывает клавиатуру
-//        return true
-//    }
+    @objc func navButtonTapped(){
+        //cityInputTextField.isHidden.toggle()
+        //cityInputTextField.endEditing(true) //скрывает клавиатуру
+        //if let city = cityInputTextField.text {
+            //weatherManager.fetchWeather(cityName: city)
+        //}
+        //cityInputTextField.text = ""
+        //handleAnimate()
+        //locationManager()
+        locationManager.requestLocation()
+    }
     
-//    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
-//        if cityInputTextField.text != "" {
-//            return true
-//        } else {
-//            cityInputTextField.placeholder = "Type something"
-//            return false
-//        }
-//    }
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        cityInputTextField.endEditing(true) //скрывает клавиатуру
+        return true
+    }
+    
+    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+        if cityInputTextField.text != "" {
+            return true
+        } else {
+            cityInputTextField.placeholder = "Type something"
+            return false
+        }
+    }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         if let city = cityInputTextField.text {
@@ -343,6 +365,22 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         
         gearButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
         gearButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -15).isActive = true
+    }
+}
+
+//MARK: - CLLocationManagerDelegate
+
+extension WeatherViewController: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.last {
+            let lat = location.coordinate.latitude
+            let lon = location.coordinate.longitude
+            weatherManager.fetchWeather(latitude: lat, longitude: lon)
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print (error)
     }
 }
 
