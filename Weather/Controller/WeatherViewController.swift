@@ -14,8 +14,8 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
     var firstConstraintsPosition: Bool = true
     var backgroundImage = ""
     
-    var backgroundLeftAnchor1: NSLayoutConstraint?
-    var backgroundLeftAnchor2: NSLayoutConstraint?
+    var backgroundTrailingAnchor1: NSLayoutConstraint?
+    var backgroundTrailingAnchor2: NSLayoutConstraint?
     
     var weatherManager = WeatherManager()
     let locationManager = CLLocationManager()
@@ -156,7 +156,7 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
-       
+        
         weatherManager.delegate = self
         cityInputTextField.delegate = self
         
@@ -164,11 +164,21 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         setSubviewsLayouts()
         
         hideKeyboardWhenTappedAround() //клава убирается после тапа везде
-        }
+        
+    }
+    
+
+    // my selector that was defined above
+    @objc func willEnterForeground() {
+        weatherManager.fetchWeather(cityName: "Moscow")
+        handleAnimate()
+    }
     
     override func viewDidAppear(_ animated: Bool) {
         weatherManager.fetchWeather(cityName: "Moscow")
         handleAnimate()
+        // set observer for UIApplication.willEnterForegroundNotification
+        NotificationCenter.default.addObserver(self, selector: #selector(willEnterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
     }
 
     private func addToSubview() {
@@ -225,6 +235,7 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         }
         cityInputTextField.isHidden = true
         cityInputTextField.text = ""
+        handleAnimate()
     }
    
     @objc func gearButtonTapped () {
@@ -234,9 +245,9 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
     }
     
     @objc func handleAnimate() {
-        UIView.animate(withDuration: 20) { //40
-            self.backgroundLeftAnchor2?.isActive.toggle()
-            self.backgroundLeftAnchor1?.isActive.toggle()
+        UIView.animate(withDuration: 15) { //40
+            self.backgroundTrailingAnchor1?.isActive.toggle()
+            self.backgroundTrailingAnchor2?.isActive.toggle()
             self.view.layoutIfNeeded()
         }
     }
@@ -312,10 +323,10 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
     private func setSubviewsLayouts() {
         
         backgroundImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
-        backgroundLeftAnchor1 = backgroundImageView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: -500)
-        backgroundLeftAnchor1?.isActive = false
-        backgroundLeftAnchor2 = backgroundImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 000)
-        backgroundLeftAnchor2?.isActive = true
+        backgroundTrailingAnchor1 = backgroundImageView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: -500)
+        backgroundTrailingAnchor1?.isActive = false
+        backgroundTrailingAnchor2 = backgroundImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 000)
+        backgroundTrailingAnchor2?.isActive = true
 
         cityLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 80).isActive = true
         cityLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
